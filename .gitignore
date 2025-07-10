@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+!hylac_shortcut/libhylac.so
 
 # Distribution / packaging
 .Python

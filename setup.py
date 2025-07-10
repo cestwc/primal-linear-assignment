@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 readme = open('README.md').read()
 
-VERSION = '0.0.1'
+VERSION = '0.0.2'
 
 requirements = [
 ]
@@ -31,4 +31,9 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
     ],
+
+    include_package_data=True,
+    package_data={
+        "balinski_and_gomory.hylac_shortcut": ["libhylac.so"],
+    },
 )
