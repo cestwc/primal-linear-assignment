@@ -76,7 +76,7 @@ def build_assignment_matrix(assignment):
     return X
 
 def solve_hylac(C):
-    X, U, V = run_lap_with_result(C.numpy().astype(np.uint32), len(C)) # Somehow the U and V are swapped in this implementation.
+    X, V, U = run_lap_with_result(C.numpy().astype(np.uint32), len(C)) # Somehow the U and V are swapped in this implementation.
     import torch
     return torch.from_numpy(build_assignment_matrix(X)).T, torch.from_numpy(U), torch.from_numpy(V)
 
