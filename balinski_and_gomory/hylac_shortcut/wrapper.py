@@ -17,6 +17,8 @@ lib.create_lap.restype = ctypes.c_void_p  # LAPHandle
 lib.solve_lap_with_result.argtypes = [
     ctypes.c_void_p,               # LAPHandle
     ctypes.POINTER(ctypes.c_int),  # int* output array
+    ctypes.POINTER(ctypes.c_int),  # int* output array
+    ctypes.POINTER(ctypes.c_int),  # int* output array
     ctypes.c_int                  # user_n
 ]
 lib.solve_lap_with_result.restype = None
@@ -39,15 +41,20 @@ def run_lap_with_result(costs: np.ndarray, user_n: int, device_id: int = 0) -> n
 
     # Prepare output buffer
     assignment = np.empty(user_n, dtype=np.int32)
+    min_in_rows = np.empty(user_n, dtype=np.int32)
+    min_in_cols = np.empty(user_n, dtype=np.int32)
+    
     assignment_ptr = assignment.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    min_in_rows_ptr = min_in_rows.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+    min_in_cols_ptr = min_in_cols.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
 
     # Solve LAP and retrieve result
-    lib.solve_lap_with_result(lap_ptr, assignment_ptr, user_n)
+    lib.solve_lap_with_result(lap_ptr, assignment_ptr, min_in_rows_ptr, min_in_cols_ptr, user_n)
 
     # Clean up
     lib.destroy_lap(lap_ptr)
 
-    return assignment
+    return assignment, min_in_rows, min_in_cols
 
 import numpy as np
 
@@ -69,9 +76,9 @@ def build_assignment_matrix(assignment):
     return X
 
 def solve_hylac(C):
-    assignment = run_lap_with_result(C.numpy().astype(np.uint32), len(C))
+    assignment, min_in_rows, min_in_cols = run_lap_with_result(C.numpy().astype(np.uint32), len(C))
     import torch
-    return torch.from_numpy(build_assignment_matrix(assignment)).T
+    return torch.from_numpy(build_assignment_matrix(assignment)).T, torch.from_numpy(min_in_rows), torch.from_numpy(min_in_cols)
 
 # Example usage
 if __name__ == "__main__":
