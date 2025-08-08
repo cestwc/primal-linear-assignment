@@ -1,1 +1,3 @@
 include balinski_and_gomory/hylac_shortcut/libhylac.so
+recursive-include balinski_and_gomory/balinski-and-gomory-cuda/src *.h *.cuh *.cu
+
