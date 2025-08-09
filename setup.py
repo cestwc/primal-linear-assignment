@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 readme = open('README.md').read()
 
-VERSION = '0.0.7'
+VERSION = '0.0.8'
 
 requirements = [
 ]
@@ -35,5 +35,6 @@ setup(
     include_package_data=True,
     package_data={
         "balinski_and_gomory.hylac_shortcut": ["libhylac.so"],
+        "balinski_and_gomory._cuda": ["solve.cpp", "balinski-and-gomory-cuda/src/*"],
     },
 )
